@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titan Roofing FL — SEO & Performance Report</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #0A1628;
+    --gold: #D4A017;
+    --orange: #E07B39;
+    --red: #C0392B;
+    --green: #1A7A3C;
+    --blue: #1565C0;
+    --light: #F4F6F9;
+    --border: #DDE1E7;
+    --text: #1A1A2E;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #F0F2F5; color: var(--text); }
+
+  /* HEADER */
+  .site-header {
+    background: linear-gradient(135deg, #0A1628 0%, #1A2F50 60%, #D4A017 100%);
+    color: white; padding: 32px 40px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .site-header h1 { font-size: 28px; font-weight: 800; letter-spacing: 1px; }
+  .site-header h1 span { color: var(--gold); }
+  .site-header .meta { text-align: right; font-size: 13px; opacity: .85; line-height: 1.6; }
+
+  /* TABS */
+  .tab-nav { background: var(--navy); display: flex; flex-wrap: wrap; padding: 0 24px; }
+  .tab-btn {
+    background: none; border: none; color: rgba(255,255,255,.6); padding: 14px 18px;
+    font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent;
+    transition: all .2s; letter-spacing: .3px; white-space: nowrap;
+  }
+  .tab-btn:hover { color: white; }
+  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 32px 40px; max-width: 1400px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .kpi-card {
+    background: white; border-radius: 10px; padding: 20px 16px; text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06); border-top: 4px solid var(--navy);
+  }
+  .kpi-card.gold { border-top-color: var(--gold); }
+  .kpi-card.green { border-top-color: var(--green); }
+  .kpi-card.red { border-top-color: var(--red); }
+  .kpi-card.orange { border-top-color: var(--orange); }
+  .kpi-card.blue { border-top-color: var(--blue); }
+  .kpi-val { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1; }
+  .kpi-label { font-size: 12px; color: #666; margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  .kpi-sub { font-size: 11px; color: #999; margin-top: 4px; }
+
+  /* SECTION */
+  .section { background: white; border-radius: 10px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .section h2 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--gold); }
+  .section h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 20px 0 10px; }
+  .section h4 { font-size: 13px; font-weight: 700; color: #444; margin: 14px 0 6px; }
+  .section p { font-size: 14px; line-height: 1.7; color: #444; margin-bottom: 10px; }
+
+  /* ALERTS */
+  .alert { padding: 14px 18px; border-radius: 8px; font-size: 13.5px; margin-bottom: 16px; line-height: 1.6; }
+  .alert-red { background: #FDECEA; border-left: 4px solid var(--red); color: #7B241C; }
+  .alert-orange { background: #FEF3E2; border-left: 4px solid var(--orange); color: #784212; }
+  .alert-green { background: #E8F5E9; border-left: 4px solid var(--green); color: #1B5E20; }
+  .alert-blue { background: #E3F2FD; border-left: 4px solid var(--blue); color: #0D47A1; }
+  .alert-gold { background: #FEF9E7; border-left: 4px solid var(--gold); color: #7D6608; }
+
+  /* TABLES */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--navy); color: white; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: #F9FAFB; }
+  tr:hover td { background: #EEF2F7; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .badge-red { background: #FDECEA; color: var(--red); }
+  .badge-orange { background: #FEF3E2; color: #B7440A; }
+  .badge-green { background: #E8F5E9; color: var(--green); }
+  .badge-blue { background: #E3F2FD; color: var(--blue); }
+  .badge-gold { background: #FEF9E7; color: #7D6608; }
+  .badge-navy { background: var(--navy); color: white; }
+
+  /* CHARTS */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .chart-box { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .chart-box h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 16px; }
+  .chart-box canvas { max-height: 280px; }
+
+  /* LISTS */
+  ul.recs { padding-left: 18px; }
+  ul.recs li { font-size: 13.5px; line-height: 1.7; color: #444; margin-bottom: 5px; }
+
+  /* META BOX */
+  .meta-box { background: #F4F6F9; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .meta-box .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 4px; }
+  .meta-box .value { font-size: 13.5px; color: var(--navy); font-weight: 600; line-height: 1.5; }
+  .meta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  /* PAGE CARD */
+  .page-card { border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; background: white; }
+  .page-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .page-card .url { font-size: 12px; color: var(--blue); margin-bottom: 12px; font-family: monospace; }
+  .page-card .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+  .page-card .stat { font-size: 12px; color: #666; }
+  .page-card .stat strong { color: var(--navy); }
+
+  /* CALENDAR */
+  .cal-month { margin-bottom: 28px; }
+  .cal-month h3 { font-size: 16px; font-weight: 700; color: var(--navy); background: var(--light); padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--gold); }
+  .post-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; background: white; }
+  .post-card .post-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .post-card .post-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .post-card .post-meta span { font-size: 11px; color: #666; }
+  .post-card .post-tip { font-size: 13px; color: #444; line-height: 1.6; }
+
+  /* FOOTER */
+  .report-footer { text-align: center; padding: 24px; color: #999; font-size: 12px; background: var(--navy); color: rgba(255,255,255,.5); margin-top: 32px; }
+
+  @media (max-width: 768px) {
+    .site-header { flex-direction: column; gap: 12px; text-align: center; padding: 20px; }
+    .tab-content { padding: 20px 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    .meta-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div>
+    <h1>TITAN ROOFING <span>FLORIDA</span></h1>
+    <div style="font-size:13px;opacity:.7;margin-top:4px;">titanroofingfl.com &nbsp;|&nbsp; Titusville, FL (Brevard County)</div>
+  </div>
+  <div class="meta">
+    <strong>SEO & Performance Report</strong><br>
+    Report Period: Dec 2025 – Jun 2026<br>
+    GA4 Property: 485911505<br>
+    Prepared by: Real Time Marketing
+  </div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('overview')">📊 Overview</button>
+  <button class="tab-btn" onclick="showTab('analytics')">📈 Google Analytics</button>
+  <button class="tab-btn" onclick="showTab('gsc')">🔍 Search Console</button>
+  <button class="tab-btn" onclick="showTab('gbp')">📍 GBP & Local SEO</button>
+  <button class="tab-btn" onclick="showTab('audit')">🔧 Page Audit</button>
+  <button class="tab-btn" onclick="showTab('calendar')">📅 Content Calendar</button>
+  <button class="tab-btn" onclick="showTab('buildout')">🏗 Page Buildout</button>
+  <button class="tab-btn" onclick="showTab('design')">🎨 Design & UX</button>
+</div>
+
+<!-- ===================== OVERVIEW ===================== -->
+<div id="overview" class="tab-content active">
+  <div class="kpi-grid">
+    <div class="kpi-card gold"><div class="kpi-val">3,268</div><div class="kpi-label">Total Sessions</div><div class="kpi-sub">Dec 2025 – Jun 2026</div></div>
+    <div class="kpi-card green"><div class="kpi-val">2,367</div><div class="kpi-label">Active Users</div><div class="kpi-sub">Unique visitors</div></div>
+    <div class="kpi-card blue"><div class="kpi-val">6,559</div><div class="kpi-label">Page Views</div><div class="kpi-sub">2.0 pages/session</div></div>
+    <div class="kpi-card orange"><div class="kpi-val">296</div><div class="kpi-label">GSC Clicks</div><div class="kpi-sub">Organic only</div></div>
+    <div class="kpi-card red"><div class="kpi-val">~14,600</div><div class="kpi-label">GSC Impressions</div><div class="kpi-sub">Total search visibility</div></div>
+    <div class="kpi-card"><div class="kpi-val">2.0%</div><div class="kpi-label">Overall CTR</div><div class="kpi-sub">Industry avg: 3–5%</div></div>
+    <div class="kpi-card green"><div class="kpi-val">27.2%</div><div class="kpi-label">Organic Share</div><div class="kpi-sub">888 sessions</div></div>
+    <div class="kpi-card red"><div class="kpi-val">83%</div><div class="kpi-label">Paid Other Bounce</div><div class="kpi-sub">Angi/lead gen — wasted $</div></div>
+  </div>
+
+  <div class="alert alert-gold">
+    <strong>⭐ KEY FINDING:</strong> Titan Roofing has strong brand recognition in Titusville — 85% of GSC clicks come from brand queries ("titan roofing", "titan construction"). The critical gap is non-brand local SEO: keywords like "roofing titusville fl" (875 impressions) and "roofing company titusville fl" (759 impressions) are generating thousands of searches but only 1–2 clicks each. Fixing this is the #1 growth lever.
+  </div>
+
+  <div class="section">
+    <h2>Priority Action Matrix</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Priority</th><th>Action Item</th><th>Impact</th><th>Timeline</th></tr>
+        <tr><td><span class="badge badge-red">CRITICAL</span></td><td>Optimize title tags + H1s on all roofing service pages with "Titusville FL" + service keyword</td><td>CTR +200–400%</td><td>Week 1</td></tr>
+        <tr><td><span class="badge badge-red">CRITICAL</span></td><td>Build dedicated Titusville, FL location page — it's missing entirely</td><td>Local rankings</td><td>Week 1</td></tr>
+        <tr><td><span class="badge badge-red">CRITICAL</span></td><td>Fix "/dont-overpay-for-your-roof-video/" — 608 sessions, 68.6% bounce; this page is losing leads</td><td>Lead conversion</td><td>Week 1</td></tr>
+        <tr><td><span class="badge badge-orange">HIGH</span></td><td>Add LocalBusiness + RoofingContractor schema markup sitewide</td><td>Rich results + AI</td><td>Week 1–2</td></tr>
+        <tr><td><span class="badge badge-orange">HIGH</span></td><td>Build 5 Brevard County city location pages (Melbourne, Palm Bay, Cocoa, Merritt Island, Cape Canaveral)</td><td>Regional traffic</td><td>Month 1–2</td></tr>
+        <tr><td><span class="badge badge-orange">HIGH</span></td><td>Stop wasting budget on Paid Other (Angi/lead gen) — 83% bounce. Redirect budget to Google Ads or Meta.</td><td>ROI improvement</td><td>Immediate</td></tr>
+        <tr><td><span class="badge badge-orange">HIGH</span></td><td>Publish 4 blog posts/month targeting non-brand local roofing keywords</td><td>Authority + traffic</td><td>Month 1+</td></tr>
+        <tr><td><span class="badge badge-blue">MEDIUM</span></td><td>Add FAQ schema to all service pages for AI search optimization</td><td>AI Overview citations</td><td>Month 1</td></tr>
+        <tr><td><span class="badge badge-blue">MEDIUM</span></td><td>Add construction/consulting service pages — "titan construction titusville" gets 289 impressions</td><td>New revenue stream</td><td>Month 2</td></tr>
+        <tr><td><span class="badge badge-blue">MEDIUM</span></td><td>Build citation campaign: Yelp, BBB, Angi (listing only), HomeAdvisor, Houzz, Nextdoor</td><td>Local authority</td><td>Month 1–2</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Brand vs. Non-Brand Performance</h2>
+    <div class="alert alert-orange">
+      <strong>⚠ HEAVY BRAND DEPENDENCY:</strong> Of 296 GSC clicks, approximately 258 (87%) are brand queries. This means Titan Roofing is capturing existing awareness but not winning new customers who don't already know the company name. Every dollar of non-brand SEO investment will generate new business.
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Category</th><th>Clicks</th><th>Impressions</th><th>Avg CTR</th><th>Avg Position</th><th>Assessment</th></tr>
+        <tr><td><strong>Brand queries</strong> ("titan roofing", "titan construction")</td><td>258</td><td>~4,700</td><td>5.5%</td><td>~8</td><td><span class="badge badge-green">Strong</span></td></tr>
+        <tr><td><strong>Non-brand local</strong> ("roofing titusville fl", "roofers near me")</td><td>~38</td><td>~9,900</td><td>0.4%</td><td>~14</td><td><span class="badge badge-red">Critical gap</span></td></tr>
+        <tr><td><strong>Opportunity</strong> (0 clicks, high impressions)</td><td>0</td><td>~4,000+</td><td>0%</td><td>15–70</td><td><span class="badge badge-orange">Build now</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>Monthly Sessions — Dec 2025 to Jun 2026</h3>
+      <canvas id="sessionsChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Traffic Channel Breakdown</h3>
+      <canvas id="channelChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ANALYTICS ===================== -->
+<div id="analytics" class="tab-content">
+  <div class="section">
+    <h2>Monthly Performance</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Month</th><th>Sessions</th><th>Active Users</th><th>Page Views</th><th>Engagement Rate</th><th>Bounce Rate</th><th>Trend</th></tr>
+        <tr><td>December 2025</td><td>261</td><td>183</td><td>519</td><td>59.4%</td><td>40.6%</td><td>Baseline</td></tr>
+        <tr><td>January 2026</td><td>413</td><td>313</td><td>729</td><td>56.2%</td><td>43.8%</td><td>↑ +58%</td></tr>
+        <tr><td>February 2026</td><td>399</td><td>290</td><td>717</td><td>53.1%</td><td>46.9%</td><td>→ Stable</td></tr>
+        <tr><td>March 2026</td><td>415</td><td>277</td><td>922</td><td>61.7%</td><td>38.3%</td><td>↑ Best engagement</td></tr>
+        <tr><td>April 2026</td><td>642</td><td>461</td><td>1,099</td><td>50.6%</td><td>49.4%</td><td>↑ +55% — spring surge</td></tr>
+        <tr><td>May 2026</td><td>693</td><td>527</td><td>1,639</td><td>35.1%</td><td>64.9%</td><td>⚠ High bounce (paid traffic?)</td></tr>
+        <tr><td>June 2026 (partial)</td><td>445</td><td>366</td><td>934</td><td>38.0%</td><td>62.0%</td><td>⚠ High bounce continues</td></tr>
+        <tr><td><strong>TOTAL</strong></td><td><strong>3,268</strong></td><td><strong>2,367</strong></td><td><strong>6,559</strong></td><td><strong>50.6% avg</strong></td><td><strong>49.4% avg</strong></td><td>—</td></tr>
+      </table>
+    </div>
+    <div class="alert alert-orange">
+      <strong>⚠ Bounce Rate Warning:</strong> May and June show bounce rates of 65–62% — significantly higher than Jan–Mar (38–47%). This coincides with increased Paid Other (Angi) and social traffic in spring. The paid lead gen channel (83% bounce) is dragging down overall quality metrics.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Traffic Channel Analysis</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Channel</th><th>Sessions</th><th>Share</th><th>Bounce Rate</th><th>Pages/Session</th><th>Assessment</th></tr>
+        <tr><td><strong>Direct</strong></td><td>1,393</td><td>42.6%</td><td>55.1%</td><td>2.5</td><td><span class="badge badge-blue">Brand awareness strong</span></td></tr>
+        <tr><td><strong>Organic Search (Google)</strong></td><td>827</td><td>25.3%</td><td>32.4%</td><td>2.1</td><td><span class="badge badge-green">Highest quality traffic</span></td></tr>
+        <tr><td><strong>Paid Other (Angi/Lead Gen)</strong></td><td>376</td><td>11.5%</td><td>83.0%</td><td>1.2</td><td><span class="badge badge-red">Stop — wasted budget</span></td></tr>
+        <tr><td><strong>Organic Social (Facebook/IG)</strong></td><td>328</td><td>10.0%</td><td>49.7%</td><td>1.3</td><td><span class="badge badge-orange">Moderate value</span></td></tr>
+        <tr><td><strong>Paid Social (FB/IG Ads)</strong></td><td>202</td><td>6.2%</td><td>53.5%</td><td>1.3</td><td><span class="badge badge-orange">Optimize targeting</span></td></tr>
+        <tr><td><strong>Referral (FB, Bing, etc.)</strong></td><td>58</td><td>1.8%</td><td>39.7%</td><td>1.5</td><td><span class="badge badge-green">Good quality</span></td></tr>
+        <tr><td><strong>Bing Organic</strong></td><td>44</td><td>1.3%</td><td>22.7%</td><td>2.2</td><td><span class="badge badge-green">Excellent quality</span></td></tr>
+        <tr><td><strong>AI Referrals (ChatGPT, Copilot)</strong></td><td>7</td><td>0.2%</td><td>~50%</td><td>—</td><td><span class="badge badge-gold">Emerging — optimize for</span></td></tr>
+      </table>
+    </div>
+    <div class="alert alert-red">
+      <strong>🚨 PAID OTHER / ANGI — STOP SPENDING:</strong> 376 sessions at 83% bounce rate means 312 people left immediately. This is likely Angi or another lead aggregator. The traffic is low quality and not converting. Redirect this budget to Google Local Services Ads (GLSA) or targeted Facebook Ads for homeowners in Brevard County.
+    </div>
+    <div class="alert alert-green">
+      <strong>✅ BING IS UNDERRATED:</strong> Bing organic has only a 22.7% bounce rate — the best of any channel. Bing powers Microsoft AI / Copilot searches. Optimizing for Bing also optimizes for Copilot AI answers, which already drives some referral traffic to this site.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Top Pages by Traffic</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Page</th><th>Sessions</th><th>Bounce Rate</th><th>Engagement</th><th>Assessment</th></tr>
+        <tr><td>/</td><td>1,829</td><td>40.7%</td><td>59.3%</td><td><span class="badge badge-green">Strong homepage</span></td></tr>
+        <tr><td>/dont-overpay-for-your-roof-video/</td><td>608</td><td>68.6%</td><td>31.4%</td><td><span class="badge badge-red">Optimize urgently</span></td></tr>
+        <tr><td>/construction-and-consulting/</td><td>332</td><td>30.1%</td><td>69.9%</td><td><span class="badge badge-green">Excellent engagement</span></td></tr>
+        <tr><td>/contact-us/</td><td>253</td><td>16.2%</td><td>83.8%</td><td><span class="badge badge-green">High intent</span></td></tr>
+        <tr><td>/about-us/</td><td>152</td><td>10.5%</td><td>89.5%</td><td><span class="badge badge-green">Excellent trust page</span></td></tr>
+        <tr><td>/financing/</td><td>151</td><td>27.8%</td><td>72.2%</td><td><span class="badge badge-green">Finance is a strong draw</span></td></tr>
+        <tr><td>/about-us/recent-projects/</td><td>113</td><td>13.3%</td><td>86.7%</td><td><span class="badge badge-green">Portfolio converts</span></td></tr>
+        <tr><td>/free-roof-estimate/</td><td>104</td><td>69.2%</td><td>30.8%</td><td><span class="badge badge-red">CTA page — fix bounce</span></td></tr>
+        <tr><td>/roofing/residential-roofing/</td><td>71</td><td>11.3%</td><td>88.7%</td><td><span class="badge badge-green">Excellent</span></td></tr>
+        <tr><td>/roof-types/metal-roof/</td><td>62</td><td>9.7%</td><td>90.3%</td><td><span class="badge badge-green">Top performer</span></td></tr>
+        <tr><td>/roofing/</td><td>59</td><td>8.5%</td><td>91.5%</td><td><span class="badge badge-green">Best engagement on site</span></td></tr>
+        <tr><td>/roofing/roof-repair/</td><td>48</td><td>16.7%</td><td>83.3%</td><td><span class="badge badge-green">Good</span></td></tr>
+        <tr><td>/roofing/roof-replacement/</td><td>39</td><td>5.1%</td><td>94.9%</td><td><span class="badge badge-green">Excellent intent</span></td></tr>
+        <tr><td>/roofing/commercial-roofing/</td><td>35</td><td>14.3%</td><td>85.7%</td><td><span class="badge badge-green">Good</span></td></tr>
+        <tr><td>/roof-types/shingle-roof/</td><td>33</td><td>3.0%</td><td>97.0%</td><td><span class="badge badge-green">⭐ Best page on site</span></td></tr>
+      </table>
+    </div>
+    <div class="alert alert-orange">
+      <strong>⚠ Two Problem Pages:</strong> "/dont-overpay-for-your-roof-video/" (608 sessions, 68.6% bounce) and "/free-roof-estimate/" (104 sessions, 69.2% bounce) are likely paid landing pages with high traffic but poor conversion. These need immediate A/B testing, stronger CTAs, social proof, and phone number above the fold.
+    </div>
+  </div>
+</div>
+
+<!-- ===================== GSC ===================== -->
+<div id="gsc" class="tab-content">
+  <div class="kpi-grid">
+    <div class="kpi-card gold"><div class="kpi-val">296</div><div class="kpi-label">Total Clicks</div></div>
+    <div class="kpi-card blue"><div class="kpi-val">~14,600</div><div class="kpi-label">Total Impressions</div></div>
+    <div class="kpi-card orange"><div class="kpi-val">2.0%</div><div class="kpi-label">Overall CTR</div><div class="kpi-sub">Target: 5%+</div></div>
+    <div class="kpi-card red"><div class="kpi-val">87%</div><div class="kpi-label">Brand Click Share</div><div class="kpi-sub">Non-brand = only 13%</div></div>
+  </div>
+
+  <div class="alert alert-red">
+    <strong>🚨 BRAND DEPENDENCY RISK:</strong> 87% of all organic clicks come from people already searching for "Titan Roofing." This is dangerous — if a competitor runs brand-targeting ads or a review crisis hits, organic traffic could collapse. Building non-brand rankings is critical for long-term stability.
+  </div>
+
+  <div class="section">
+    <h2>Top 50 Search Queries — Full Analysis</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>#</th><th>Query</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Position</th><th>Type</th><th>Recommendation</th></tr>
+        <tr><td>1</td><td>titan roofing of florida</td><td>101</td><td>1,061</td><td>9.5%</td><td>4.2</td><td><span class="badge badge-navy">Brand</span></td><td>Strong. Protect with homepage title. Try to reach position 1–2.</td></tr>
+        <tr><td>2</td><td>titan roofing</td><td>85</td><td>2,490</td><td>3.4%</td><td>8.0</td><td><span class="badge badge-navy">Brand</span></td><td>CRITICAL: 2,490 impressions at position 8. Push to top 3 — could triple clicks. Add brand schema.</td></tr>
+        <tr><td>3</td><td>titan roofing florida</td><td>37</td><td>228</td><td>16.2%</td><td>2.4</td><td><span class="badge badge-navy">Brand</span></td><td>Excellent position. Maintain.</td></tr>
+        <tr><td>4</td><td>titan construction</td><td>11</td><td>495</td><td>2.2%</td><td>27.6</td><td><span class="badge badge-navy">Brand</span></td><td>Build: 495 impressions at position 28. Construction page needs its own optimized title tag.</td></tr>
+        <tr><td>5</td><td>titan construction and consulting</td><td>11</td><td>77</td><td>14.3%</td><td>2.4</td><td><span class="badge badge-navy">Brand</span></td><td>Strong. Ensure construction page is comprehensive and schema-marked.</td></tr>
+        <tr><td>6</td><td>titan construction titusville</td><td>11</td><td>289</td><td>3.8%</td><td>3.1</td><td><span class="badge badge-navy">Brand+Local</span></td><td>Good. Position 3.1. Push to #1 with more construction content.</td></tr>
+        <tr><td>7</td><td>titan roofing and construction</td><td>6</td><td>168</td><td>3.6%</td><td>20.7</td><td><span class="badge badge-navy">Brand</span></td><td>Build: Position 21 — add "roofing and construction" to page titles.</td></tr>
+        <tr><td>8</td><td>roof repair titusville fl</td><td>4</td><td>502</td><td>0.8%</td><td>8.8</td><td><span class="badge badge-orange">Local</span></td><td>HIGH: 502 impressions at position 8.8. Rewrite roof repair page title with "Titusville FL."</td></tr>
+        <tr><td>9</td><td>roofers near me</td><td>4</td><td>597</td><td>0.7%</td><td>13.2</td><td><span class="badge badge-orange">Near Me</span></td><td>HIGH: 597 impressions at position 13. GBP optimization + reviews = top map pack result.</td></tr>
+        <tr><td>10</td><td>roofing companies in titusville florida</td><td>4</td><td>240</td><td>1.7%</td><td>9.6</td><td><span class="badge badge-orange">Local</span></td><td>Near top 10. Add "roofing companies in Titusville Florida" to service area page H1.</td></tr>
+        <tr><td>11</td><td>roofing companies titusville</td><td>4</td><td>589</td><td>0.7%</td><td>17.0</td><td><span class="badge badge-orange">Local</span></td><td>HIGH: 589 impressions at position 17. Build Titusville location page targeting this phrase.</td></tr>
+        <tr><td>12</td><td>roof repair titusville</td><td>2</td><td>485</td><td>0.4%</td><td>20.3</td><td><span class="badge badge-orange">Local</span></td><td>HIGH: 485 impressions at position 20. Optimize roof repair page with Titusville content.</td></tr>
+        <tr><td>13</td><td>roofing contractors near me</td><td>2</td><td>523</td><td>0.4%</td><td>10.4</td><td><span class="badge badge-orange">Near Me</span></td><td>HIGH: 523 impressions at position 10. GBP + reviews pushes into map pack for this query.</td></tr>
+        <tr><td>14</td><td>titan roofing reviews</td><td>2</td><td>113</td><td>1.8%</td><td>5.8</td><td><span class="badge badge-navy">Brand</span></td><td>Build: Reviews page or testimonials page with AggregateRating schema.</td></tr>
+        <tr><td>15</td><td>titusville roofing companies</td><td>2</td><td>531</td><td>0.4%</td><td>12.2</td><td><span class="badge badge-orange">Local</span></td><td>HIGH: 531 impressions. Build/optimize Titusville location page. Target this exact phrase.</td></tr>
+        <tr><td>16</td><td>commercial roofing titusville fl</td><td>1</td><td>596</td><td>0.2%</td><td>15.4</td><td><span class="badge badge-orange">Local</span></td><td>HIGH: 596 impressions at position 15. Commercial roofing page needs "Titusville FL" in title.</td></tr>
+        <tr><td>17</td><td>roof leak repair near me</td><td>1</td><td>457</td><td>0.2%</td><td>25.5</td><td><span class="badge badge-orange">Near Me</span></td><td>Build: 457 impressions. Add "roof leak" section to roof repair page. GBP service category.</td></tr>
+        <tr><td>18</td><td>roof repair company near me</td><td>1</td><td>78</td><td>1.3%</td><td>12.5</td><td><span class="badge badge-orange">Near Me</span></td><td>Build: GBP optimization. Add "repair company" language to roof repair page.</td></tr>
+        <tr><td>19</td><td>roof repair near me</td><td>1</td><td>1,011</td><td>0.1%</td><td>13.4</td><td><span class="badge badge-red">Near Me</span></td><td>CRITICAL: 1,011 impressions — biggest non-brand keyword. GBP must dominate map pack here.</td></tr>
+        <tr><td>20</td><td>roof repair titusville, fl</td><td>1</td><td>43</td><td>2.3%</td><td>3.0</td><td><span class="badge badge-green">Local</span></td><td>Position 3 — excellent. Build on this. Exact-match variant already ranking well.</td></tr>
+        <tr><td>21</td><td>roof replacement palm bay fl</td><td>1</td><td>27</td><td>3.7%</td><td>56.9</td><td><span class="badge badge-blue">New Market</span></td><td>Build: Palm Bay is in Brevard County. Create Palm Bay location page.</td></tr>
+        <tr><td>22</td><td>roofer near me</td><td>1</td><td>884</td><td>0.1%</td><td>9.5</td><td><span class="badge badge-red">Near Me</span></td><td>CRITICAL: 884 impressions. "Near me" = Google Maps result. GBP with 50+ reviews wins this.</td></tr>
+        <tr><td>23</td><td>roofers titusville fl</td><td>1</td><td>391</td><td>0.3%</td><td>29.3</td><td><span class="badge badge-orange">Local</span></td><td>Build: 391 impressions at position 29. Titusville location page targets this.</td></tr>
+        <tr><td>24</td><td>roofing</td><td>1</td><td>344</td><td>0.3%</td><td>3.0</td><td><span class="badge badge-blue">Generic</span></td><td>Position 3 for generic "roofing" is remarkable. Capitalize by adding location to all roofing pages.</td></tr>
+        <tr><td>25</td><td>roofing companies brevard county florida</td><td>1</td><td>21</td><td>4.8%</td><td>60.6</td><td><span class="badge badge-blue">Regional</span></td><td>Build: Brevard County hub page. This is the regional target market — needs dedicated content.</td></tr>
+        <tr><td>26</td><td>roofing companies near me</td><td>1</td><td>653</td><td>0.2%</td><td>11.9</td><td><span class="badge badge-orange">Near Me</span></td><td>HIGH: 653 impressions. GBP map pack dominates "near me" searches. Push reviews to 100+.</td></tr>
+        <tr><td>27</td><td>roofing company titusville fl</td><td>1</td><td>759</td><td>0.1%</td><td>16.9</td><td><span class="badge badge-red">Local</span></td><td>CRITICAL: 759 impressions at position 17. Primary money keyword. Titusville page needed now.</td></tr>
+        <tr><td>28</td><td>roofing contractor titusville fl</td><td>1</td><td>353</td><td>0.3%</td><td>4.1</td><td><span class="badge badge-green">Local</span></td><td>Position 4.1 — very close to top 3. "Contractor" in title pushes to #1.</td></tr>
+        <tr><td>29</td><td>roofing titusville fl</td><td>1</td><td>875</td><td>0.1%</td><td>19.6</td><td><span class="badge badge-red">Local</span></td><td>CRITICAL: 875 impressions at position 20. This + "roofing company titusville fl" = top 2 targets.</td></tr>
+        <tr><td>30</td><td>titusville roof repair</td><td>1</td><td>196</td><td>0.5%</td><td>22.0</td><td><span class="badge badge-orange">Local</span></td><td>Build: 196 impressions at position 22. Optimize roof repair page with this phrase variation.</td></tr>
+        <tr><td>31</td><td>commercial roofing titusville fl</td><td>1</td><td>596</td><td>0.2%</td><td>15.4</td><td><span class="badge badge-orange">Local</span></td><td>HIGH: Rewrite commercial roofing page with Titusville FL in title and H1.</td></tr>
+        <tr><td>32</td><td>titan roofers</td><td>1</td><td>15</td><td>6.7%</td><td>17.3</td><td><span class="badge badge-navy">Brand</span></td><td>Brand variant. Homepage should rank #1 for all "titan" queries.</td></tr>
+        <tr><td>33</td><td>roofing contractors in florida</td><td>1</td><td>3</td><td>33.3%</td><td>21.0</td><td><span class="badge badge-blue">Statewide</span></td><td>Long-tail statewide. Add "Florida roofing contractor" to meta/footer.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Zero-Click Opportunities (0 Clicks but 100+ Impressions)</h2>
+    <div class="alert alert-gold">
+      These keywords show Google is surfacing the site in search results, but nobody is clicking. Optimizing these pages could add 50–200 clicks/month with no new content — just better title tags and meta descriptions.
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Keyword</th><th>Impressions</th><th>Position</th><th>Action Required</th></tr>
+        <tr><td>roof repair near me</td><td>1,011</td><td>13.4</td><td>Optimize roof repair title tag. Push GBP to map pack top 3.</td></tr>
+        <tr><td>roofer near me</td><td>884</td><td>9.5</td><td>GBP review building. "Near me" = local pack result.</td></tr>
+        <tr><td>roofing titusville fl</td><td>875</td><td>19.6</td><td>Build Titusville FL location page. Add this phrase as H1.</td></tr>
+        <tr><td>roofing company titusville fl</td><td>759</td><td>16.9</td><td>Titusville location page targets this directly.</td></tr>
+        <tr><td>roofing companies near me</td><td>653</td><td>11.9</td><td>GBP map pack optimization. 100+ reviews target.</td></tr>
+        <tr><td>commercial roofing titusville fl</td><td>596</td><td>15.4</td><td>Rewrite commercial page: "Commercial Roofing Titusville FL | Titan Roofing"</td></tr>
+        <tr><td>roofing companies titusville</td><td>589</td><td>17.0</td><td>Titusville location page with this phrase in H1.</td></tr>
+        <tr><td>roofing contractors near me</td><td>523</td><td>10.4</td><td>GBP + reviews. Also add "licensed roofing contractor" to homepage.</td></tr>
+        <tr><td>titusville roofing companies</td><td>531</td><td>12.2</td><td>Location page variation — add "titusville roofing companies" as H2 or FAQ.</td></tr>
+        <tr><td>roofers titusville fl</td><td>391</td><td>29.3</td><td>Titusville location page. This phrase as FAQ: "Who are the best roofers in Titusville FL?"</td></tr>
+        <tr><td>roofing contractor titusville fl</td><td>353</td><td>4.1</td><td>Already near top! Add "roofing contractor" to Titusville page title.</td></tr>
+        <tr><td>roofing</td><td>344</td><td>3.0</td><td>Already position 3! Add city to all service page titles to capture local intent.</td></tr>
+        <tr><td>roofing contractor near me</td><td>353</td><td>10.4</td><td>GBP + service area optimization.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== GBP ===================== -->
+<div id="gbp" class="tab-content">
+  <div class="alert alert-gold">
+    <strong>📍 Note on GBP Data:</strong> The provided GBP spreadsheet requires Google authentication and couldn't be accessed directly. The section below contains strategic recommendations based on what the GSC data reveals about local search performance. To include your actual GBP stats (views, calls, directions), please paste the spreadsheet data and we'll update this section.
+  </div>
+
+  <div class="section">
+    <h2>Why GBP is Mission-Critical for Titan Roofing</h2>
+    <p>Roofing is a <strong>"near me" category</strong> — when someone needs a roofer, they search "roofer near me," "roofing companies near me," or "roof repair near me." Google's answer to these queries is almost always the <strong>local 3-pack (Google Maps)</strong> — not the organic blue links. Titan Roofing currently shows impressions for all three of these terms (884 + 653 + 1,011 = 2,548 combined impressions) but only 6 total clicks. That means the GBP listing is either not appearing in the map pack, or is being outranked by competitors.</p>
+  </div>
+
+  <div class="section">
+    <h2>GBP Optimization Checklist</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Item</th><th>Status</th><th>Action Required</th></tr>
+        <tr><td>Business Name</td><td>—</td><td>Should be exactly "Titan Roofing of Florida" (matches top brand query)</td></tr>
+        <tr><td>Primary Category</td><td>—</td><td>Must be "Roofing Contractor" — not "Roofer" or "Construction Company"</td></tr>
+        <tr><td>Secondary Categories</td><td>—</td><td>Add: Roof Repair Service, Metal Roofing Contractor, Commercial Roofing Contractor</td></tr>
+        <tr><td>Service Area</td><td>—</td><td>Set to all Brevard County cities: Titusville, Melbourne, Palm Bay, Cocoa, Cape Canaveral, Merritt Island, Rockledge</td></tr>
+        <tr><td>Services Listed</td><td>—</td><td>Add every service: Residential Roofing, Commercial Roofing, Roof Repair, Roof Replacement, Metal Roofs, Shingle Roofs, Roof Inspection, Construction & Consulting</td></tr>
+        <tr><td>Photos</td><td>—</td><td>Add 20+ photos: job site before/afters, team, truck, completed roofs. Update weekly.</td></tr>
+        <tr><td>Google Reviews</td><td>—</td><td>Target 100+ reviews. Send follow-up email/text to every customer requesting a review.</td></tr>
+        <tr><td>Q&A Section</td><td>—</td><td>Pre-populate with 10 FAQs: "Do you offer free estimates?" "What areas do you serve?" etc.</td></tr>
+        <tr><td>GBP Posts</td><td>—</td><td>Post weekly: completed jobs, financing offers, seasonal tips, promotions</td></tr>
+        <tr><td>Booking/Quote Link</td><td>—</td><td>Add "Free Estimate" CTA button linking to /free-roof-estimate/</td></tr>
+        <tr><td>Hours</td><td>—</td><td>Include holiday hours and specify emergency availability if offered</td></tr>
+        <tr><td>Website Link</td><td>—</td><td>Link to homepage — ensure UTM tracking: ?utm_source=google&utm_medium=gbp</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Review Strategy</h2>
+    <div class="alert alert-blue">
+      <strong>Google Reviews are the #1 local ranking factor.</strong> More reviews + higher ratings = higher map pack position = more "near me" clicks. Every 10 new reviews can push a listing up 1–2 spots in the local 3-pack.
+    </div>
+    <h3>Getting to 100 Reviews — Action Plan</h3>
+    <ul class="recs">
+      <li><strong>SMS follow-up:</strong> Text every customer within 24 hours of job completion: "Hi [Name], thanks for choosing Titan Roofing! If you're happy with your new roof, a quick Google review helps us a lot: [link]"</li>
+      <li><strong>Email sequence:</strong> Day 1 thank you + review request. Day 7 follow-up if no review.</li>
+      <li><strong>QR code:</strong> Print Google review QR code on invoices, receipts, and business cards.</li>
+      <li><strong>Respond to all reviews:</strong> Reply to every review (positive and negative) within 24 hours. Google rewards responsive businesses.</li>
+      <li><strong>Flag fake/competitor reviews:</strong> Report any suspicious reviews to Google immediately.</li>
+      <li><strong>Never incentivize reviews:</strong> Against Google's terms of service. Just make asking part of the process.</li>
+    </ul>
+
+    <h3>Review Response Templates</h3>
+    <div class="meta-box">
+      <div class="label">Positive Review Response</div>
+      <div class="value">"Thank you [Name]! We're so glad your new [roof type] turned out great. It was a pleasure working with you. If you ever need anything, don't hesitate to call — Titan Roofing of Florida is always here for Titusville homeowners. — The Titan Team"</div>
+    </div>
+    <div class="meta-box">
+      <div class="label">Negative Review Response</div>
+      <div class="value">"Hi [Name], we're sorry to hear about your experience. We take all feedback seriously and want to make this right. Please call us at [phone] or email [email] so we can resolve this directly. We stand behind our work. — Titan Roofing of Florida"</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Local Citation Building</h2>
+    <p>Citations (your business name, address, phone on other websites) reinforce GBP authority. Consistency across all platforms is critical — even one character difference in your NAP can hurt rankings.</p>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Platform</th><th>Priority</th><th>Action</th></tr>
+        <tr><td>Google Business Profile</td><td><span class="badge badge-red">Must-Have</span></td><td>Full optimization as above</td></tr>
+        <tr><td>Yelp</td><td><span class="badge badge-red">Must-Have</span></td><td>Claim + fully complete. Add photos. Respond to all reviews.</td></tr>
+        <tr><td>BBB (Better Business Bureau)</td><td><span class="badge badge-red">Must-Have</span></td><td>Accreditation builds major trust for roofing. Get A+ rating.</td></tr>
+        <tr><td>Angi (listing only)</td><td><span class="badge badge-orange">High</span></td><td>Keep free listing for citations. Do NOT pay for leads — see bounce rate data.</td></tr>
+        <tr><td>HomeAdvisor</td><td><span class="badge badge-orange">High</span></td><td>Free listing only. Citation value only — do not pay for leads.</td></tr>
+        <tr><td>Houzz</td><td><span class="badge badge-orange">High</span></td><td>Important for roofing/construction. Add portfolio photos.</td></tr>
+        <tr><td>Nextdoor</td><td><span class="badge badge-orange">High</span></td><td>Critical for neighborhood-level visibility in Titusville. Free business listing.</td></tr>
+        <tr><td>Thumbtack</td><td><span class="badge badge-blue">Medium</span></td><td>Free listing. Get customer reviews here too.</td></tr>
+        <tr><td>Facebook Business Page</td><td><span class="badge badge-blue">Medium</span></td><td>Already driving referral traffic. Ensure NAP matches GBP exactly.</td></tr>
+        <tr><td>Apple Maps</td><td><span class="badge badge-blue">Medium</span></td><td>Claim via Apple Business Connect. Many iPhone users use Apple Maps.</td></tr>
+        <tr><td>Bing Places</td><td><span class="badge badge-blue">Medium</span></td><td>Bing organic already delivers great quality traffic (22.7% bounce). Claim Bing Places.</td></tr>
+        <tr><td>Florida Roofing Assoc. (FRSA)</td><td><span class="badge badge-gold">Authority</span></td><td>FRSA membership = trust signal + citation. Florida homeowners recognize this.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAGE AUDIT ===================== -->
+<div id="audit" class="tab-content">
+  <div class="alert alert-blue">
+    All 20 pages from GA4 audited with exact recommended title tags, meta descriptions, H1s, and priority action items. Sorted by session volume — highest traffic first.
+  </div>
+
+  <!-- HOMEPAGE -->
+  <div class="page-card">
+    <h3>🏠 1. Homepage</h3>
+    <div class="url">titanroofingfl.com/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>1,829</strong> sessions</span>
+      <span class="stat"><strong>40.7%</strong> bounce</span>
+      <span class="stat"><strong>59.3%</strong> engagement</span>
+    </div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Titan Roofing of Florida | Titusville &amp; Brevard County Roofer</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Titusville's Trusted Roofing Contractor — Titan Roofing of Florida</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Titan Roofing of Florida serves Titusville and all of Brevard County. Residential &amp; commercial roofing, roof repair, metal roofs, shingle replacement. Licensed &amp; insured. Free estimates.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Title tag missing city:</strong> Add "Titusville" and "Brevard County" — currently the #1 entry page but not capturing local search intent</li>
+      <li><strong>No Google review widget:</strong> Add star rating + review count above the fold — primary trust signal; 40.7% bounce means first impression needs improvement</li>
+      <li><strong>Missing schema:</strong> Add LocalBusiness + RoofingContractor + AggregateRating JSON-LD markup</li>
+      <li><strong>Financing hidden:</strong> /financing/ gets 72% engagement — feature "Financing Available — 0% APR" prominently on homepage</li>
+      <li><strong>No city footer:</strong> Add Brevard County city list in footer with links to location pages</li>
+      <li><strong>Mobile CTA missing:</strong> Add sticky "Free Estimate" or "Call Now" bar pinned to bottom of screen on mobile</li>
+      <li><strong>No service grid:</strong> Add visual service category grid above fold: Residential, Commercial, Roof Repair, Metal Roofing — with icons and direct links</li>
+      <li><strong>Social proof gap:</strong> Add project count, years in business, and license number visibly on homepage</li>
+    </ul>
+  </div>
+
+  <!-- DONT OVERPAY VIDEO -->
+  <div class="page-card">
+    <h3>&#x26A0;&#xFE0F; 2. Don't Overpay Video Page — URGENT FIX</h3>
+    <div class="url">/dont-overpay-for-your-roof-video/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>608</strong> sessions</span>
+      <span class="stat" style="color:var(--red)"><strong>68.6%</strong> bounce</span>
+      <span class="stat"><strong>31.4%</strong> engagement</span>
+    </div>
+    <div class="alert alert-red"><strong>CRITICAL:</strong> 2nd most visited page with a 68.6% bounce. This is likely a paid ad landing page — at estimated 50% paid traffic, this page may be losing 300+ leads per month. Every week this isn't fixed is money lost.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Don't Overpay for Your Roof — Watch Before You Get Any Quote | Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Watch This Before You Hire Any Roofer in Titusville FL</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Before you spend $10,000+ on a new roof, watch this. Titan Roofing of Florida shows you exactly how to avoid overpaying, what questions to ask, and why Titusville homeowners trust us with their biggest investment.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>No form on page:</strong> Add lead capture form immediately below video: Name, Phone, Address, "What's your roof issue?" — this is likely why the bounce is so high</li>
+      <li><strong>No phone number above fold:</strong> Add large click-to-call number in the hero section — emergency mindset visitors want to call, not scroll</li>
+      <li><strong>No social proof:</strong> Add Google review stars, BBB badge, and "X roofs completed in Brevard County" near the top of the page</li>
+      <li><strong>Add video transcript:</strong> Full transcript below the video helps SEO, accessibility, and users who won't watch</li>
+      <li><strong>Add FAQ section:</strong> 5 questions with FAQ schema — "How long does a roof replacement take?" etc. Keeps users on page longer and targets AI search</li>
+      <li><strong>Internal links missing:</strong> Link to /financing/, /about-us/recent-projects/, and /free-roof-estimate/ throughout page content</li>
+      <li><strong>A/B test the headline:</strong> Test "Why Titusville Homeowners Choose Titan Roofing" vs. current "Don't Overpay" framing</li>
+      <li><strong>Page speed check:</strong> Video pages are often slow — ensure video is hosted on YouTube/Vimeo (not self-hosted) to prevent slow LCP</li>
+    </ul>
+  </div>
+
+  <!-- CONSTRUCTION -->
+  <div class="page-card">
+    <h3>&#x2699;&#xFE0F; 3. Construction &amp; Consulting</h3>
+    <div class="url">/construction-and-consulting/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>332</strong> sessions</span>
+      <span class="stat"><strong>30.1%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>69.9%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Excellent engagement (69.9%).</strong> "Titan construction titusville" gets 289 impressions at position 3.1. This division is a growth opportunity — needs sub-pages for each service type.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Titan Construction &amp; Consulting Titusville FL | Licensed General Contractor</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">General Construction &amp; Consulting Services — Titusville, FL</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Titan Construction and Consulting LLC — licensed general contractor in Titusville, FL. Project management, home renovation, commercial construction &amp; consulting throughout Brevard County. Free estimates.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Title missing brand + city:</strong> Add "Titusville FL" and "Titan Construction and Consulting" (matches brand query with 11 clicks)</li>
+      <li><strong>No service sub-pages:</strong> Create dedicated pages for: General Construction, Project Management, Home Renovation, Commercial Construction</li>
+      <li><strong>Missing license info:</strong> Add FL contractor license number prominently — required for credibility and E-E-A-T</li>
+      <li><strong>Separate contact form:</strong> Construction inquiries are different from roofing — add a specific form for construction projects</li>
+      <li><strong>Add portfolio section:</strong> Completed construction projects with photos, scope, and location in Titusville/Brevard</li>
+      <li><strong>Cross-link to roofing:</strong> Many construction clients also need roofing — cross-link to roofing services prominently</li>
+      <li><strong>Add GeneralContractor schema:</strong> Separate from RoofingContractor schema on homepage</li>
+    </ul>
+  </div>
+
+  <!-- CONTACT US -->
+  <div class="page-card">
+    <h3>&#x1F4DE; 4. Contact Us</h3>
+    <div class="url">/contact-us/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>253</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>16.2%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>83.8%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Excellent high-intent page.</strong> 16.2% bounce = visitors are actively engaging. 83.8% engagement rate is one of the best on the site. This is where decisions are made.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Contact Titan Roofing of Florida | Free Estimate Titusville FL</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Contact Titan Roofing of Florida — Get Your Free Estimate Today</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Contact Titan Roofing of Florida for a free roofing estimate in Titusville, FL and Brevard County. Call, text, or fill out our form — we respond within 2 business hours. Residential &amp; commercial roofing available.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add response time promise:</strong> "We respond within 2 business hours" directly above the form — reduces hesitation to submit</li>
+      <li><strong>Add office hours:</strong> Clearly state when calls will be answered — especially if emergency service is available after hours</li>
+      <li><strong>Embed Google Map:</strong> Show the Titusville office location with embedded map for local trust signal</li>
+      <li><strong>Add ContactPage schema:</strong> Structured data helps Google display address and phone in Knowledge Panel</li>
+      <li><strong>Multiple contact methods:</strong> Phone, text, email, and form — give visitors options for how they prefer to reach out</li>
+      <li><strong>Add "What happens next":</strong> After form submission, explain the process: "1. We call you within 2 hours. 2. We schedule a free inspection. 3. We provide a written estimate."</li>
+      <li><strong>Service-specific routing:</strong> Add dropdown "What service do you need?" to route inquiries correctly (Roofing vs. Construction vs. Emergency)</li>
+    </ul>
+  </div>
+
+  <!-- ABOUT US -->
+  <div class="page-card">
+    <h3>&#x1F465; 5. About Us</h3>
+    <div class="url">/about-us/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>152</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>10.5%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>89.5%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Outstanding engagement (89.5%).</strong> 10.5% bounce = visitors who land here are highly interested. Optimize fully for E-E-A-T to help AI search rankings.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">About Titan Roofing of Florida | Titusville's Trusted Roofer Since [Year]</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">About Titan Roofing of Florida — Titusville's Local Roofing Experts</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Learn about Titan Roofing of Florida — Titusville's trusted roofing contractor. Family-owned, licensed, and proud to serve Brevard County homeowners and businesses since [year]. Meet our team and see our work.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add owner bio with photo:</strong> Name, background, Florida license number, years of experience — critical for E-E-A-T and AI search citations</li>
+      <li><strong>Add team section:</strong> Photos and names of key crew members — builds trust, humanizes the brand</li>
+      <li><strong>Add founding story:</strong> Why was Titan Roofing started? What makes it different from national chains? Local story = local authority</li>
+      <li><strong>Add license and insurance prominently:</strong> "Florida Licensed Roofing Contractor #[Number] | Fully Insured | BBB Accredited"</li>
+      <li><strong>Add certifications:</strong> GAF, CertainTeed, Owens Corning — manufacturer certifications are important trust signals</li>
+      <li><strong>Link from About to Reviews:</strong> Add "See what our customers say" CTA linking to Google reviews or a testimonials page</li>
+      <li><strong>Add Organization schema:</strong> Structured data for the company with founding date, employees, service area, social profiles</li>
+    </ul>
+  </div>
+
+  <!-- FINANCING -->
+  <div class="page-card">
+    <h3>&#x1F4B3; 6. Financing</h3>
+    <div class="url">/financing/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>151</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>27.8%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>72.2%</strong> engagement</span>
+    </div>
+    <div class="alert alert-gold"><strong>High-value page with excellent engagement.</strong> 72.2% engagement rate means visitors are seriously considering financing. Roof financing is a huge conversion driver — many homeowners can't pay $10,000+ upfront.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roof Financing Titusville FL | 0% APR Options — Titan Roofing of Florida</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Roofing Financing Options in Titusville, FL — Don't Let Budget Hold You Back</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Titan Roofing of Florida offers flexible roof financing in Titusville, FL. 0% APR options available. Get a new roof now and pay over time. Apply in minutes. Serving all of Brevard County.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" and rate info to title:</strong> "0% APR" or "No Money Down" in title tag dramatically increases CTR for financing searches</li>
+      <li><strong>Add financing calculator:</strong> Interactive monthly payment estimator — visitors input loan amount and see monthly cost</li>
+      <li><strong>Specify lender partners:</strong> Name the financing companies used (GreenSky, Mosaic, Synchrony Home) — adds credibility</li>
+      <li><strong>Add FAQ schema:</strong> "Do I need good credit for roof financing?" "Can I finance just a repair?" "What's the minimum amount I can finance?"</li>
+      <li><strong>Feature on homepage and all service pages:</strong> This page converts well — add "Financing Available" with link everywhere</li>
+      <li><strong>Add "Apply in 60 seconds" CTA:</strong> If there's an online application, make it the primary CTA; if not, add "Call to Check Your Rate in 2 Minutes"</li>
+    </ul>
+  </div>
+
+  <!-- RECENT PROJECTS -->
+  <div class="page-card">
+    <h3>&#x1F4F8; 7. Recent Projects</h3>
+    <div class="url">/about-us/recent-projects/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>113</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>13.3%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>86.7%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Portfolio pages build conversions.</strong> 86.7% engagement = visitors browsing work. Before/after project photos are often the final trust signal before a homeowner decides to call.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roofing Projects in Titusville &amp; Brevard County | Titan Roofing Portfolio</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Recent Roofing Projects — Titusville &amp; Brevard County, FL</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">See recent roofing projects completed by Titan Roofing of Florida in Titusville, Melbourne, Palm Bay, and throughout Brevard County. Residential &amp; commercial before-and-after gallery.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add city/neighborhood labels:</strong> Tag each project with "Titusville," "Melbourne," "Palm Bay" etc. — helps local SEO and shows service area breadth</li>
+      <li><strong>Add project details:</strong> Each project: roof type, scope, neighborhood, 1–2 sentence description — helps search engines understand the content</li>
+      <li><strong>Add alt text to all photos:</strong> "Titan Roofing metal roof installation in Titusville FL — before and after" — critical for image SEO</li>
+      <li><strong>Add filter by service type:</strong> Let visitors filter by Residential, Commercial, Metal, Shingle, Repair — improves UX for bottom-of-funnel visitors</li>
+      <li><strong>Add CTAs between projects:</strong> Every 4–5 projects, insert "Get a Free Estimate for Your Home" CTA</li>
+      <li><strong>Link from homepage prominently:</strong> "See Our Recent Work" button on homepage — this page earns prime placement with 86.7% engagement</li>
+    </ul>
+  </div>
+
+  <!-- FREE ROOF ESTIMATE -->
+  <div class="page-card">
+    <h3>&#x26A0;&#xFE0F; 8. Free Roof Estimate — URGENT FIX</h3>
+    <div class="url">/free-roof-estimate/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>104</strong> sessions</span>
+      <span class="stat" style="color:var(--red)"><strong>69.2%</strong> bounce</span>
+      <span class="stat"><strong>30.8%</strong> engagement</span>
+    </div>
+    <div class="alert alert-red"><strong>CRITICAL:</strong> The #1 conversion page on the entire site — and 69 out of 100 visitors leave without taking action. Fixing this page could double or triple monthly lead volume immediately.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Free Roof Estimate Titusville FL | Same Week Appointments — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Get Your Free Roof Estimate in Titusville, FL — We Respond in 2 Hours</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Request a free roof estimate from Titan Roofing of Florida. Serving Titusville and all of Brevard County. We respond within 2 business hours. No obligation — just honest, transparent pricing.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Reduce form fields immediately:</strong> Maximum 4 fields: Name, Phone Number, Address, Roof Issue (dropdown) — every extra field loses 10–20% of submissions</li>
+      <li><strong>Add trust signals above the form:</strong> Google review stars + count, BBB badge, license number, years in business</li>
+      <li><strong>"We respond in 2 hours" guarantee:</strong> Add directly above the submit button — commitment reduces hesitation</li>
+      <li><strong>Add click-to-call alternative:</strong> Large phone number next to form for users who prefer calling</li>
+      <li><strong>Test page speed:</strong> Run PageSpeed Insights — if LCP is over 3 seconds, many mobile users leave before the form loads</li>
+      <li><strong>Add social proof below form:</strong> 2–3 short testimonials specifically about the estimate experience</li>
+      <li><strong>Consider removing top navigation:</strong> This is a landing page; nav links are exit points — removing nav can increase conversions 10–30%</li>
+      <li><strong>Add "What to expect" section:</strong> "1. Submit form → 2. We call within 2 hours → 3. Free inspection → 4. Written estimate provided"</li>
+    </ul>
+  </div>
+
+  <!-- BLOG INDEX -->
+  <div class="page-card">
+    <h3>&#x1F4DD; 9. Blog Index</h3>
+    <div class="url">/about-us/blogs/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>80</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>13.75%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>86.25%</strong> engagement</span>
+    </div>
+    <div class="alert alert-gold"><strong>Blog is working but under-resourced.</strong> 86% engagement rate = people actively reading content. However, 80 sessions over 7 months is very low. With 4 posts/month, this should grow to 500+ sessions/month within 6 months.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roofing Blog | Titusville FL Roofing Tips &amp; Guides — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Roofing Tips, Guides &amp; News for Titusville &amp; Brevard County Homeowners</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">The Titan Roofing blog covers everything Florida homeowners need to know — storm damage, insurance claims, roof types, maintenance tips, and Brevard County roofing guides. Written by Titusville's local roofing experts.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Move blog to /blog/ URL:</strong> "/about-us/blogs/" buries this section. Move to /blog/ for better SEO and navigation clarity</li>
+      <li><strong>Add blog to main navigation:</strong> Blog should be accessible from top nav — currently hidden under About</li>
+      <li><strong>Publish consistently:</strong> 4 posts/month as laid out in the Content Calendar tab — this is the #1 organic traffic growth lever</li>
+      <li><strong>Add category filter:</strong> Storm Damage, Insurance, Roof Types, Local Guides, Maintenance</li>
+      <li><strong>Add email signup:</strong> "Get roofing tips for Florida homeowners" email capture</li>
+      <li><strong>Add author byline to posts:</strong> "Written by [Owner Name], Licensed Roofing Contractor" — required for E-E-A-T</li>
+    </ul>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="page-card">
+    <h3>&#x1F5BC; 10. Gallery</h3>
+    <div class="url">/about-us/gallery/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>80</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>10%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>90%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Outstanding engagement (90%).</strong> 10% bounce = virtually everyone who visits the gallery stays. This is a powerful trust-building page that needs more visibility.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roofing Gallery | Titusville FL Before &amp; After Photos — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Roofing Gallery — Before &amp; After Projects in Titusville &amp; Brevard County</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Browse Titan Roofing's before-and-after gallery of completed roofing projects in Titusville, Melbourne, Palm Bay and throughout Brevard County, FL. Metal, shingle, commercial, and repair projects.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Move to /gallery/ top-level URL:</strong> /about-us/gallery/ hides this high-performing page — move to /gallery/ or /roofing-gallery/ for better SEO signal</li>
+      <li><strong>All images need descriptive alt text:</strong> "Metal roof replacement on [neighborhood] home in Titusville FL — Titan Roofing" — currently likely blank or generic</li>
+      <li><strong>Add city/location labels:</strong> Tag each photo with the neighborhood or city in Brevard County</li>
+      <li><strong>Add captions with roof type:</strong> "Standing seam metal roof — Palm Bay FL | Installed by Titan Roofing" — each caption is indexable text</li>
+      <li><strong>Add ImageGallery schema:</strong> Structured data helps these photos appear in Google Images and AI search visual results</li>
+      <li><strong>Link gallery from homepage:</strong> "See Our Work" CTA prominently on homepage — 90% engagement earns a prime spot</li>
+      <li><strong>Add interspersed CTAs:</strong> After every 8–10 photos, add a "Like what you see? Get a Free Estimate" button</li>
+    </ul>
+  </div>
+
+  <!-- RESIDENTIAL ROOFING -->
+  <div class="page-card">
+    <h3>&#x1F3D8; 11. Residential Roofing</h3>
+    <div class="url">/roofing/residential-roofing/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>71</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>11.3%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>88.7%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Excellent engagement (88.7%).</strong> People who find this page are highly interested. Problem: only 71 sessions in 7 months. With proper local keyword optimization this should be 300–500/month.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Residential Roofing Titusville FL | Shingle, Metal &amp; Tile — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Residential Roofing in Titusville &amp; Brevard County, FL</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Titan Roofing of Florida installs and repairs residential roofs throughout Titusville and Brevard County. Shingle, metal, and tile roofing. Insurance claims assistance. Financing available. Free estimates.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" to title tag and H1:</strong> Single most impactful change for this page — targets all residential roofing + location searches</li>
+      <li><strong>Expand page to 1,000+ words:</strong> Cover: roof types available, installation process, timeline, warranty, Florida-specific considerations (wind resistance, hurricane ratings)</li>
+      <li><strong>Add insurance claim section:</strong> "We work with all Florida insurance companies" — storm damage is the #1 trigger for residential roof replacement in FL</li>
+      <li><strong>Feature financing:</strong> Add "Financing Available from $X/month" with link to /financing/</li>
+      <li><strong>Add residential project gallery:</strong> 6–8 photos of completed residential jobs in Titusville/Brevard with before/after</li>
+      <li><strong>Add FAQ schema:</strong> "How long does a residential roof replacement take?" "What's the best roof for Florida?" "Do you work with insurance adjusters?"</li>
+      <li><strong>Internal links:</strong> Link to /roof-types/shingle-roof/, /roof-types/metal-roof/, /roofing/roof-replacement/, and /financing/</li>
+    </ul>
+  </div>
+
+  <!-- METAL ROOF -->
+  <div class="page-card">
+    <h3>&#x1F527; 12. Metal Roof</h3>
+    <div class="url">/roof-types/metal-roof/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>62</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>9.7%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>90.3%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Top-performing content page (90.3% engagement).</strong> Metal roofing is growing fast in Florida for hurricane resistance and insurance discounts. Needs a city keyword and more depth to capture full opportunity.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Metal Roof Titusville FL | Hurricane-Resistant Roofing — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Metal Roofing in Titusville, FL — Built for Florida's Weather</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Metal roof installation and repair in Titusville, FL and Brevard County. Standing seam, corrugated, and metal shingle options. Hurricane-rated, energy efficient, and eligible for Florida insurance discounts. Free estimate.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" to title:</strong> "Metal roof titusville fl" is an unranked but valuable keyword — one title tag change targets it</li>
+      <li><strong>Add Florida-specific benefits:</strong> Hurricane resistance rating (FL Building Code), energy savings in FL heat, insurance premium reduction</li>
+      <li><strong>Add metal roof types:</strong> Standing seam vs. corrugated vs. metal shingle vs. stone-coated steel — each is a separate buyer intent</li>
+      <li><strong>Add cost section:</strong> "Metal Roof Cost in Titusville FL" — pricing content ranks well and earns trust</li>
+      <li><strong>Add FAQ schema:</strong> "How long does a metal roof last in Florida?" "Is metal roofing worth it in Florida?" "Does metal roofing reduce insurance?"</li>
+      <li><strong>Add "metal roof vs. shingle" comparison:</strong> Link to /roof-types/shingle-roof/ for comparison — keeps users engaged and helps them decide</li>
+      <li><strong>Add warranty information:</strong> Manufacturer warranty + Titan's installation warranty — differentiator vs. competitors</li>
+    </ul>
+  </div>
+
+  <!-- ROOFING HUB -->
+  <div class="page-card">
+    <h3>&#x1F3D7; 13. Roofing Services Hub</h3>
+    <div class="url">/roofing/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>59</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>8.5%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>91.5%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Highest engagement rate on site (91.5%).</strong> The roofing hub is a discovery page — visitors use it to navigate to specific services. Optimize as an internal linking hub and improve its SEO visibility.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roofing Services Titusville FL | Residential &amp; Commercial — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Complete Roofing Services in Titusville &amp; Brevard County, FL</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Full-service roofing contractor in Titusville, FL. Residential roofing, commercial roofing, roof repair, roof replacement, metal roofing, and more. Titan Roofing of Florida — licensed, insured, free estimates.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" to title tag:</strong> Hub page with 91.5% engagement needs city keyword to capture "roofing services titusville fl" searches</li>
+      <li><strong>Add BreadcrumbList schema:</strong> This is a hub — structured breadcrumb data helps Google understand the site hierarchy</li>
+      <li><strong>Add service grid with icons:</strong> All sub-services as cards: Residential, Commercial, Repair, Replacement, Metal, Shingle — each linking to its page</li>
+      <li><strong>Add "Why Titan Roofing" section:</strong> Licensing, insurance, warranty, service area, years in business</li>
+      <li><strong>Add FAQs:</strong> "What roofing services do you offer?" "Do you serve all of Brevard County?" — with FAQ schema</li>
+      <li><strong>Link to construction division:</strong> Cross-sell construction services from the roofing hub</li>
+    </ul>
+  </div>
+
+  <!-- ROOF REPAIR -->
+  <div class="page-card">
+    <h3>&#x1F528; 14. Roof Repair</h3>
+    <div class="url">/roofing/roof-repair/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>48</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>16.7%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>83.3%</strong> engagement</span>
+    </div>
+    <div class="alert alert-orange"><strong>HIGHEST ROI PAGE FOR OPTIMIZATION.</strong> GSC shows 1,183 impressions for "roof repair titusville" variants at positions 8–22. With 83% engagement, visitors who find this page are converting — the problem is only 48 people found it in 7 months. Title tag fix = 10x traffic.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roof Repair Titusville FL | Storm Damage &amp; Leak Repair — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Roof Repair in Titusville, FL — Fast Response, Guaranteed Work</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Expert roof repair in Titusville, FL. Leak repair, storm damage, missing shingles, flashing, gutters &amp; emergency repairs. Titan Roofing of Florida — licensed, insured, responds fast. Free estimates. Call now.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Rewrite title with "Roof Repair Titusville FL" first:</strong> 1,183 combined impressions — highest-ROI title tag change on the site</li>
+      <li><strong>Expand to 1,000+ words:</strong> Leak repair, storm/hurricane damage, missing shingles, flashing, fascia and soffit, emergency repair, insurance claims</li>
+      <li><strong>Add storm damage section:</strong> Florida has more wind/hail claims than any other state — target "Florida storm damage roof repair"</li>
+      <li><strong>Add emergency section with click-to-call:</strong> "Roof leaking right now? Call us immediately" with large phone button</li>
+      <li><strong>Add insurance claim help:</strong> "We work with your insurance adjuster" — removes a major homeowner objection</li>
+      <li><strong>Add FAQ schema:</strong> "How much does roof repair cost in Titusville FL?" "Can I repair just part of my roof?" "Does homeowner's insurance cover roof repair in Florida?"</li>
+      <li><strong>Add repair vs. replace guide:</strong> Brief comparison section — link to /roofing/roof-replacement/</li>
+    </ul>
+  </div>
+
+  <!-- AREAS WE SERVE -->
+  <div class="page-card">
+    <h3>&#x1F4CD; 15. Areas We Serve</h3>
+    <div class="url">/areas-we-serve/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>42</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>7.1%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>92.9%</strong> engagement</span>
+    </div>
+    <div class="alert alert-gold"><strong>92.9% engagement = visitors using this page to find their city.</strong> This is a pure navigation page. Its job: show comprehensive coverage and link to every city page. Right now it only has Titusville — it needs all of Brevard County.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roofing Service Areas | Titusville, Melbourne, Palm Bay — Titan Roofing FL</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Roofing Services Across Brevard County, Florida</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Titan Roofing of Florida serves all of Brevard County including Titusville, Melbourne, Palm Bay, Cocoa, Merritt Island, Cape Canaveral, Rockledge, and surrounding areas. Call for a free local estimate.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add all Brevard County cities:</strong> Melbourne, Palm Bay, Cocoa, Cape Canaveral, Merritt Island, Rockledge, Mims, Port St. John — each as a linked card</li>
+      <li><strong>Each city = dedicated page:</strong> This hub links to individual city pages (see Page Buildout tab for full list)</li>
+      <li><strong>Add service area map:</strong> Embed a map showing coverage radius — visual proof of service area</li>
+      <li><strong>Add city-specific FAQs:</strong> "Do you serve Melbourne FL?" "What areas of Brevard County do you cover?" — with FAQ schema</li>
+      <li><strong>Add ServiceArea schema:</strong> Structured data listing every city served — Google uses this for local search ranking</li>
+    </ul>
+  </div>
+
+  <!-- TITUSVILLE AREA PAGE -->
+  <div class="page-card">
+    <h3>&#x1F4CD; 16. Titusville Area Page — PRIMARY RANKING TARGET</h3>
+    <div class="url">/areas-we-serve/titusville-fl/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>40</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>15%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>85%</strong> engagement</span>
+    </div>
+    <div class="alert alert-red"><strong>MOST IMPORTANT PAGE TO OPTIMIZE.</strong> "Roofing titusville fl" = 875 impressions, "roofing company titusville fl" = 759 impressions — both near-zero clicks. This page (fully optimized) is the single highest-impact SEO investment on the entire site.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roofing Company Titusville FL | #1 Local Roofer — Titan Roofing of Florida</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Titusville's Top-Rated Roofing Company — Titan Roofing of Florida</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Titan Roofing of Florida is Titusville's trusted roofing contractor. Residential &amp; commercial roofing, roof repair, metal roofs &amp; storm damage. Serving all neighborhoods in Titusville, FL. Free estimates — call today.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Full rewrite targeting "roofing company titusville fl":</strong> 875+759 impressions = 1,634 impressions at near-zero CTR — the single biggest keyword opportunity on the site</li>
+      <li><strong>Add Titusville-specific content:</strong> Reference local landmarks, neighborhoods (Canaveral Groves, Whispering Hills, Indian River City), Space Coast context</li>
+      <li><strong>List all service types:</strong> Residential, commercial, repair, metal, shingle — comprehensive service listing for Titusville searchers</li>
+      <li><strong>Add 5 Titusville customer testimonials:</strong> Reviews that mention "Titusville" or specific neighborhoods — local context is critical</li>
+      <li><strong>Add LocalBusiness schema specific to Titusville:</strong> ServiceArea set to Titusville + surrounding ZIP codes</li>
+      <li><strong>Add FAQ schema:</strong> "What roofing companies are in Titusville FL?" "How much does a roof cost in Titusville?" — answer directly on the page</li>
+      <li><strong>Embed Google Map centered on Titusville:</strong> Visual proof of local presence</li>
+    </ul>
+  </div>
+
+  <!-- ROOF REPLACEMENT -->
+  <div class="page-card">
+    <h3>&#x1F3E0; 17. Roof Replacement</h3>
+    <div class="url">/roofing/roof-replacement/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>39</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>5.1%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>94.9%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>Best bounce rate of any service page (5.1%).</strong> Visitors who find this page are extremely interested — roof replacement is a high-ticket, high-intent purchase. Low traffic is the only problem.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Roof Replacement Titusville FL | Full Reroof Service — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Roof Replacement in Titusville &amp; Brevard County, FL — Quality You Can Count On</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Complete roof replacement service in Titusville, FL and Brevard County. Shingle, metal, and tile reroof options. Insurance claims assistance available. Titan Roofing of Florida — licensed, warranted, free estimates.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" to title and H1:</strong> Targets "roof replacement titusville fl" — currently not ranking for this high-value term</li>
+      <li><strong>Expand content to 1,200+ words:</strong> Replacement process, timeline, what to expect, permit process in Titusville/Brevard, cleanup</li>
+      <li><strong>Add repair vs. replacement guide:</strong> Link to /roofing/roof-repair/ — helps visitors at decision point</li>
+      <li><strong>Add insurance coverage section:</strong> "Does Florida homeowner's insurance cover roof replacement?" — major decision factor in FL</li>
+      <li><strong>Add manufacturer options:</strong> GAF, CertainTeed, Owens Corning — brand names build credibility and target brand-specific searches</li>
+      <li><strong>Feature financing prominently:</strong> $10,000+ purchase = financing is critical. Add "Starting from $X/month with financing" CTA</li>
+      <li><strong>Add FAQ schema:</strong> "How long does a roof replacement take in Florida?" "What's the best roof replacement material for Florida?" "Does Titan Roofing handle permits?"</li>
+    </ul>
+  </div>
+
+  <!-- COMMERCIAL ROOFING -->
+  <div class="page-card">
+    <h3>&#x1F3E2; 18. Commercial Roofing</h3>
+    <div class="url">/roofing/commercial-roofing/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>35</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>14.3%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>85.7%</strong> engagement</span>
+    </div>
+    <div class="alert alert-orange"><strong>596 impressions for "commercial roofing titusville fl" at position 15.4 — only 1 click.</strong> Adding "Titusville FL" to the title alone could push this to top 5 and generate 20–40 high-value commercial leads per month.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Commercial Roofing Titusville FL | Flat, Metal &amp; TPO — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Commercial Roofing Services in Titusville &amp; Brevard County, FL</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Licensed commercial roofing contractor in Titusville, FL and Brevard County. Flat roofs, TPO, EPDM, metal roofing, commercial repairs &amp; re-roofing. Titan Roofing — free commercial estimates, fast turnaround.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" to title and H1 immediately:</strong> High-impact one-change fix targeting 596 commercial impressions</li>
+      <li><strong>Add commercial roof types section:</strong> TPO, EPDM, modified bitumen, flat roof, standing seam metal commercial</li>
+      <li><strong>Add industries served:</strong> Retail, office buildings, warehouses, HOA, industrial, government — Florida Space Coast has a diverse commercial market</li>
+      <li><strong>Add commercial case studies:</strong> Before/after photos of commercial projects with sq footage and scope</li>
+      <li><strong>Separate commercial quote form:</strong> Business name, building size, roof type, timeline, budget range</li>
+      <li><strong>Add maintenance program section:</strong> Scheduled commercial inspections — recurring revenue, high-value B2B</li>
+      <li><strong>Add FAQ schema:</strong> "Do you offer commercial roof maintenance contracts?" "What commercial roofing systems do you install?" "Do you work with commercial insurance?"</li>
+    </ul>
+  </div>
+
+  <!-- SHINGLE ROOF -->
+  <div class="page-card">
+    <h3>&#x1F3E0; 19. Shingle Roof — Best Page on Site</h3>
+    <div class="url">/roof-types/shingle-roof/</div>
+    <div class="stats-row">
+      <span class="stat"><strong>33</strong> sessions</span>
+      <span class="stat" style="color:var(--green)"><strong>3.0%</strong> bounce</span>
+      <span class="stat" style="color:var(--green)"><strong>97.0%</strong> engagement</span>
+    </div>
+    <div class="alert alert-green"><strong>BEST PAGE ON SITE — 97% engagement, 3% bounce.</strong> Whatever this page does (content depth, quality photos, helpful information), replicate across all other service pages immediately. This is the template for success.</div>
+    <div class="meta-row">
+      <div class="meta-box"><div class="label">Recommended Title Tag</div><div class="value">Shingle Roof Titusville FL | Architectural &amp; 3-Tab Shingles — Titan Roofing</div></div>
+      <div class="meta-box"><div class="label">Recommended H1</div><div class="value">Shingle Roofing in Titusville &amp; Brevard County, FL — Durable, Beautiful, Affordable</div></div>
+    </div>
+    <div class="meta-box"><div class="label">Recommended Meta Description</div><div class="value">Expert shingle roof installation and repair in Titusville, FL. Architectural, 3-tab, and designer shingles. GAF, Owens Corning, and CertainTeed options. Titan Roofing — Florida's weather experts. Free estimates.</div></div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Add "Titusville FL" to title:</strong> Site's best-performing page by engagement — maximize its reach with city keyword</li>
+      <li><strong>Study what makes this page work:</strong> Audit the content structure, image use, and formatting — apply this exact formula to metal roof, roof repair, and commercial pages</li>
+      <li><strong>Add shingle types comparison:</strong> 3-tab vs. architectural vs. designer vs. impact-resistant — different price points, different buyer personas</li>
+      <li><strong>Add Florida wind resistance info:</strong> Impact-resistant shingles qualify for FL insurance discounts — a major selling point unique to Florida</li>
+      <li><strong>Add manufacturer certifications:</strong> GAF Master Elite, CertainTeed SELECT ShingleMaster, Owens Corning Preferred</li>
+      <li><strong>Link to comparison:</strong> "Shingles vs. Metal Roof" blog post — link to /roof-types/metal-roof/ for comparison</li>
+      <li><strong>Add FAQ schema:</strong> "How long do shingle roofs last in Florida?" "What's the best shingle brand for Florida?" "Are architectural shingles worth the cost?"</li>
+    </ul>
+  </div>
+
+  <!-- RENDER BROKEN -->
+  <div class="page-card">
+    <h3>&#x1F6A8; 20. /render — BROKEN PAGE (Fix Immediately)</h3>
+    <div class="url">/render</div>
+    <div class="stats-row">
+      <span class="stat"><strong>66</strong> sessions</span>
+      <span class="stat" style="color:var(--red)"><strong>100%</strong> bounce</span>
+      <span class="stat"><strong>0%</strong> engagement</span>
+    </div>
+    <div class="alert alert-red"><strong>BROKEN PAGE — 66 sessions, 100% bounce, 0% engagement.</strong> This is a technical error — likely a server-side rendering route exposed publicly or a broken redirect. Every session to /render is a completely wasted visit with zero conversion potential.</div>
+    <h4>Audit Issues &amp; Recommendations:</h4>
+    <ul class="recs">
+      <li><strong>Identify the cause:</strong> Check if /render is a server route, a CMS preview URL, or a broken redirect — it should never be publicly accessible</li>
+      <li><strong>Add 301 redirect to homepage immediately:</strong> Redirect /render &#x2192; / (homepage) to recover those sessions and prevent future waste</li>
+      <li><strong>Block from crawling:</strong> Add to robots.txt: Disallow: /render</li>
+      <li><strong>Remove from sitemap:</strong> Ensure /render is not included in any XML sitemap submissions to Google</li>
+      <li><strong>Investigate referral source:</strong> Check in GA4 what's sending traffic to /render — may be a broken ad URL, email link, or old social post</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ===================== CONTENT CALENDAR ===================== -->
+<div id="calendar" class="tab-content">
+  <div class="alert alert-blue">
+    4 blog posts per month targeting high-impression GSC keywords with 0 or low clicks. Florida roofing content focuses on storm damage, insurance, hurricane prep, and local city targeting. All posts should include FAQ schema for AI search optimization.
+  </div>
+
+  <div class="cal-month">
+    <h3>JULY 2026 — Local Authority & Emergency Roofing</h3>
+    <div class="post-card">
+      <div class="post-title">1. Roof Damage After a Storm in Titusville FL? Here's Exactly What to Do</div>
+      <div class="post-meta"><span>📅 July 7</span><span>📝 1,800 words</span><span>🏷 Emergency / Storm Damage</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roof repair titusville fl, storm damage roof titusville, emergency roof repair brevard county<br><strong>Strategy:</strong> Storm damage is the #1 driver of roofing leads in Florida. Step-by-step guide: document damage, tarp if needed, call insurance, get contractor. Include Titan Roofing CTA at each step. Highly shareable for Titusville Nextdoor and Facebook groups. Add FAQ schema.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">2. How Much Does a New Roof Cost in Titusville, FL? (2026 Pricing Guide)</div>
+      <div class="post-meta"><span>📅 July 14</span><span>📝 2,000 words</span><span>🏷 Pricing / Local</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roof replacement cost titusville fl, new roof cost florida, roofing prices brevard county<br><strong>Strategy:</strong> Pricing transparency content earns backlinks and trust. Cover: shingle vs. metal vs. tile cost, factors affecting price (size, pitch, permits), insurance considerations. Position Titan as the honest local option. AI search cites cost guides heavily.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">3. Best Roofing Companies in Titusville FL: What to Look for in 2026</div>
+      <div class="post-meta"><span>📅 July 21</span><span>📝 2,000 words</span><span>🏷 Comparison / Local Authority</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roofing companies titusville fl, best roofers titusville, roofing company titusville fl<br><strong>Strategy:</strong> Targets "roofing company titusville fl" (759 impressions, 0.1% CTR). Buyer's guide format: what license to look for, insurance, warranty, reviews, red flags. Titan mentioned as example of best practices. Must be objective to rank well under helpful content guidelines.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">4. Metal Roof vs. Shingle Roof in Florida: Which Is Right for Your Home?</div>
+      <div class="post-meta"><span>📅 July 28</span><span>📝 1,700 words</span><span>🏷 Educational / Comparison</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> metal roof vs shingle florida, metal roof titusville fl, shingle roof florida pros cons<br><strong>Strategy:</strong> Supports both /roof-types/metal-roof/ (9.7% bounce) and /roof-types/shingle-roof/ (3.0% bounce) — both excellent pages. Comparison posts rank for both terms. Florida-specific: hurricane resistance, heat, insurance discounts for metal roofs in FL.</div>
+    </div>
+  </div>
+
+  <div class="cal-month">
+    <h3>AUGUST 2026 — Insurance, Financing & Florida-Specific Content</h3>
+    <div class="post-card">
+      <div class="post-title">5. How to File a Roof Insurance Claim in Florida (Step-by-Step Guide)</div>
+      <div class="post-meta"><span>📅 Aug 4</span><span>📝 2,200 words</span><span>🏷 Insurance / Florida Homeowners</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roof insurance claim florida, storm damage roof claim titusville, insurance roof replacement florida<br><strong>Strategy:</strong> Florida has the highest rate of roofing insurance claims in the US. This guide is extremely valuable to Brevard County homeowners. Include Titan as a contractor that works with all major insurers. High AI search citation potential — very specific and helpful.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">6. Roof Financing in Titusville FL: How to Pay for a New Roof Without Breaking the Bank</div>
+      <div class="post-meta"><span>📅 Aug 11</span><span>📝 1,500 words</span><span>🏷 Financing</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roof financing titusville fl, roofing payment plans florida, 0% financing new roof<br><strong>Strategy:</strong> /financing/ already has 72% engagement rate — this page converts. A blog post targets people researching before committing. Link to /financing/ throughout. Include Titan's specific financing terms and partners.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">7. Commercial Roofing in Titusville FL: Complete Guide for Business Owners</div>
+      <div class="post-meta"><span>📅 Aug 18</span><span>📝 1,800 words</span><span>🏷 Commercial</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> commercial roofing titusville fl, commercial roof repair brevard county, flat roof contractor titusville<br><strong>Strategy:</strong> Targets "commercial roofing titusville fl" (596 impressions, 0.2% CTR). Commercial clients are higher revenue. Cover: flat roofs, TPO, EPDM, scheduled maintenance programs, commercial insurance claims.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">8. 7 Signs Your Titusville Home Needs a New Roof (Before It's Too Late)</div>
+      <div class="post-meta"><span>📅 Aug 25</span><span>📝 1,600 words</span><span>🏷 Homeowner Education</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> when to replace roof florida, signs you need new roof titusville, roof inspection titusville fl<br><strong>Strategy:</strong> Problem-aware content — homeowners searching warning signs are high intent buyers. Florida-specific: mold, algae, hurricane damage, age thresholds. Add FAQ schema. Leads naturally to free roof inspection CTA.</div>
+    </div>
+  </div>
+
+  <div class="cal-month">
+    <h3>SEPTEMBER 2026 — Hurricane Prep, AI Search & Brevard County Coverage</h3>
+    <div class="post-card">
+      <div class="post-title">9. Hurricane Season Roofing Checklist for Brevard County Homeowners (2026)</div>
+      <div class="post-meta"><span>📅 Sep 1</span><span>📝 1,600 words</span><span>🏷 Seasonal / Hurricane Prep</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> hurricane roof preparation florida, hurricane ready roof brevard county, storm proof roof titusville<br><strong>Strategy:</strong> Published September = peaks in October during hurricane season. Florida's Space Coast is in a hurricane zone. This is evergreen, high-authority content that earns backlinks from local news and home improvement sites. Strong AI citation candidate.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">10. Roof Repair vs. Roof Replacement: How to Decide in Titusville FL</div>
+      <div class="post-meta"><span>📅 Sep 8</span><span>📝 1,800 words</span><span>🏷 Decision Guide</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roof repair vs replacement titusville, should I repair or replace my roof florida, roof repair titusville fl<br><strong>Strategy:</strong> High-intent decision content. Homeowners searching this are ready to hire — they just need help deciding scope. Include cost comparison, age threshold (15–20 years in FL), insurance considerations. End with free consultation CTA.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">11. Melbourne FL Roofing: What Brevard County Homeowners Need to Know</div>
+      <div class="post-meta"><span>📅 Sep 15</span><span>📝 1,500 words</span><span>🏷 Location / Brevard County</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roofing melbourne fl, roofer melbourne florida, roof repair melbourne brevard county<br><strong>Strategy:</strong> Melbourne is Brevard County's second-largest city. Location-targeted content + a location page drive local traffic. GSC shows "roof replacement palm bay fl" (position 56.9) — there's demand across Brevard. Melbourne content expands service area footprint.</div>
+    </div>
+    <div class="post-card">
+      <div class="post-title">12. What Is a Roofing Inspection and Do You Need One? (Titusville FL Guide)</div>
+      <div class="post-meta"><span>📅 Sep 22</span><span>📝 1,400 words</span><span>🏷 Educational / AI Search</span></div>
+      <div class="post-tip"><strong>Keywords:</strong> roof inspection titusville fl, free roof inspection florida, roofing inspection brevard county<br><strong>Strategy:</strong> "Explain it to me" content performs well in AI search. Clear structure: What is a roof inspection → What they check → How long it takes → What it costs → When you need one. Include Titan's free inspection offer prominently. FAQ schema required.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== BUILDOUT ===================== -->
+<div id="buildout" class="tab-content">
+  <div class="alert alert-gold">
+    New pages prioritized by GSC impression data. All pages targeting Brevard County cities will create a geographic coverage network that amplifies local ranking authority for Titusville (the core market).
+  </div>
+
+  <div class="section">
+    <h2>TIER 1 — Build Immediately (July 2026)</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Page URL</th><th>Target Keywords</th><th>GSC Data</th><th>Why</th></tr>
+        <tr><td><code>/areas-we-serve/titusville-fl/roofing/</code></td><td>roofing titusville fl, roofing company titusville fl, roofers titusville fl</td><td>875 + 759 + 391 impressions = 2,025 impressions</td><td><span class="badge badge-red">CRITICAL</span> Top 3 non-brand keywords all target this location+service combination. This single page could add 100+ clicks/month.</td></tr>
+        <tr><td><code>/areas-we-serve/titusville-fl/roof-repair/</code></td><td>roof repair titusville fl, roof repair titusville, titusville roof repair</td><td>502 + 485 + 196 = 1,183 impressions</td><td><span class="badge badge-red">CRITICAL</span> Repair keywords at positions 8–22 — location page pushes these to top 5.</td></tr>
+        <tr><td><code>/areas-we-serve/titusville-fl/commercial-roofing/</code></td><td>commercial roofing titusville fl, commercial roofer titusville</td><td>596 impressions, position 15.4</td><td><span class="badge badge-orange">HIGH</span> Commercial is high-revenue. Separate location+service page for this keyword.</td></tr>
+        <tr><td><code>/areas-we-serve/brevard-county-fl/</code></td><td>roofing companies brevard county florida, brevard county roofer</td><td>21 impressions at position 60.6 — untapped</td><td><span class="badge badge-orange">HIGH</span> County hub page for all Brevard coverage. Links to all city pages.</td></tr>
+        <tr><td><code>/roof-types/tile-roof/</code></td><td>tile roof florida, tile roofing titusville, clay tile roof brevard county</td><td>Not yet in GSC — new keyword target</td><td><span class="badge badge-orange">HIGH</span> Tile is extremely common in Florida. Completes the roof type coverage (metal + shingle already exist).</td></tr>
+        <tr><td><code>/roofing/roof-inspection/</code></td><td>free roof inspection titusville, roof inspection florida, roof inspection brevard</td><td>Not yet ranking — new target</td><td><span class="badge badge-orange">HIGH</span> Free inspection = top-of-funnel lead. Currently no dedicated page for this service.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>TIER 2 — Build August 2026 (Brevard County Cities)</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Page URL</th><th>City</th><th>Target Keywords</th><th>Population</th></tr>
+        <tr><td><code>/areas-we-serve/melbourne-fl/</code></td><td>Melbourne, FL</td><td>roofing melbourne fl, roofer melbourne florida, roof repair melbourne</td><td>~80,000 — Brevard's largest city</td></tr>
+        <tr><td><code>/areas-we-serve/palm-bay-fl/</code></td><td>Palm Bay, FL</td><td>roof replacement palm bay fl, roofing palm bay, roofer palm bay</td><td>~120,000 — largest in Brevard</td></tr>
+        <tr><td><code>/areas-we-serve/cocoa-fl/</code></td><td>Cocoa, FL</td><td>roofing cocoa fl, roofer cocoa florida, roof repair cocoa brevard</td><td>~20,000</td></tr>
+        <tr><td><code>/areas-we-serve/merritt-island-fl/</code></td><td>Merritt Island, FL</td><td>roofing merritt island fl, roofer merritt island</td><td>~35,000</td></tr>
+        <tr><td><code>/areas-we-serve/cape-canaveral-fl/</code></td><td>Cape Canaveral, FL</td><td>roofing cape canaveral, roofer cape canaveral fl</td><td>~10,000</td></tr>
+        <tr><td><code>/areas-we-serve/rockledge-fl/</code></td><td>Rockledge, FL</td><td>roofing rockledge fl, roofer rockledge florida</td><td>~25,000</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>TIER 3 — Build September 2026 (Service Depth)</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Page URL</th><th>Service</th><th>Keywords</th><th>Rationale</th></tr>
+        <tr><td><code>/roofing/storm-damage-repair/</code></td><td>Storm Damage Repair</td><td>storm damage roof repair titusville, hurricane roof damage florida</td><td>Florida's #1 roofing trigger — insurance claims after storms. High urgency + high conversion.</td></tr>
+        <tr><td><code>/roofing/flat-roof/</code></td><td>Flat Roof / TPO</td><td>flat roof repair titusville fl, TPO roofing brevard county</td><td>Commercial and some residential. Separate from commercial page for keyword targeting.</td></tr>
+        <tr><td><code>/construction-and-consulting/home-renovation/</code></td><td>Home Renovation</td><td>home renovation titusville fl, home remodeling brevard county</td><td>Construction division needs sub-pages. "Titan construction titusville" gets 289 impressions.</td></tr>
+        <tr><td><code>/construction-and-consulting/project-management/</code></td><td>Project Management</td><td>construction project management titusville fl</td><td>Higher-value B2B service. Own page for this professional service.</td></tr>
+        <tr><td><code>/roofing/roof-maintenance/</code></td><td>Roof Maintenance</td><td>roof maintenance program florida, annual roof inspection titusville</td><td>Recurring revenue service. Builds long-term customer relationships.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Location Page Template Requirements</h2>
+    <ul class="recs">
+      <li>Unique H1: "[Service] in [City], FL — Titan Roofing of Florida" (never duplicate homepage)</li>
+      <li>Opening paragraph: 200+ words mentioning city name, neighborhoods, and roofing-specific Florida context (humidity, hurricanes, insurance)</li>
+      <li>5–8 FAQ items with FAQ schema markup — targets AI Overviews and featured snippets</li>
+      <li>LocalBusiness + ServiceArea schema pointing to this specific city</li>
+      <li>Embed Google Map centered on the city</li>
+      <li>3 customer testimonials with city mention in the review text</li>
+      <li>Internal links to: related service pages, blog posts, free estimate form, financing page</li>
+      <li>Photo with alt text: "Titan Roofing crew on job site in [City], Florida"</li>
+      <li>Breadcrumb: Home → Service Areas → [City] → [Service]</li>
+      <li>Phone number and CTA button visible above the fold on mobile</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===================== DESIGN & UX ===================== -->
+<div id="design" class="tab-content">
+  <div class="section">
+    <h2>Critical UX Issues</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Issue</th><th>Priority</th><th>Evidence</th><th>Fix</th></tr>
+        <tr><td>Landing pages losing leads</td><td><span class="badge badge-red">CRITICAL</span></td><td>/dont-overpay-video/ 68.6% bounce, /free-estimate/ 69.2% bounce</td><td>Add form, trust signals, phone # above fold, social proof</td></tr>
+        <tr><td>No sticky mobile CTA</td><td><span class="badge badge-red">CRITICAL</span></td><td>Roofing searches are 70%+ mobile; users call immediately</td><td>Fixed bottom bar: "Call Now" + phone # always visible</td></tr>
+        <tr><td>Paid lead gen (Angi) wasted</td><td><span class="badge badge-red">CRITICAL</span></td><td>376 sessions, 83% bounce — worst traffic source on site</td><td>Cancel Angi paid leads. Redirect budget to Google LSA or Facebook Ads.</td></tr>
+        <tr><td>Free estimate form too complex</td><td><span class="badge badge-orange">HIGH</span></td><td>69.2% bounce on /free-roof-estimate/ page</td><td>Reduce to 4 fields. Add "We respond in 2 hours" commitment.</td></tr>
+        <tr><td>No review count visible</td><td><span class="badge badge-orange">HIGH</span></td><td>40.7% homepage bounce — missing primary trust signal</td><td>Add Google review badge above fold with stars + count</td></tr>
+        <tr><td>Bing not tracked properly</td><td><span class="badge badge-blue">MEDIUM</span></td><td>Bing organic has 22.7% bounce (best channel) — underinvested</td><td>Claim Bing Places. Install Bing Webmaster Tools. Monitor rankings.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Mobile Experience</h2>
+    <ul class="recs">
+      <li>Add sticky "Call Now" footer bar — phone number pinned while scrolling on all service pages</li>
+      <li>All CTA buttons: minimum 44px height (Google mobile usability standard)</li>
+      <li>Target under 3 seconds LCP on mobile — run PageSpeed Insights on all top 10 pages</li>
+      <li>Convert all images to WebP format with lazy loading</li>
+      <li>Contact form: maximum 4 fields on mobile (Name, Phone, Address, Issue)</li>
+      <li>Add "Text Us" option — many homeowners prefer texting for non-emergency inquiries</li>
+      <li>Ensure phone number is a tap-to-call link everywhere it appears</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>AI Search & E-E-A-T Optimization</h2>
+    <div class="alert alert-blue">
+      <strong>AI Search is Already Sending Traffic:</strong> ChatGPT (4 sessions) and Copilot (3 sessions) already refer traffic to Titan Roofing. This will grow significantly in 2026–2027 as AI search matures. Optimizing for AI citation now builds a compounding advantage.
+    </div>
+    <ul class="recs">
+      <li>Add owner bio with photo, license number (Florida CCC/CGC), and years of experience to About page</li>
+      <li>Add AggregateRating schema to homepage and all service pages — AI cites star ratings</li>
+      <li>Add FAQ schema to every service page — AI models use these as direct answers</li>
+      <li>Create "Quick Answer" box at top of every blog post — first paragraph should answer the query directly</li>
+      <li>Respond to every Google review within 24 hours — AI reads review sentiment as E-E-A-T signal</li>
+      <li>Get listed on authoritative Florida contractor directories: FRSA, Florida DBPR lookup, HomeAdvisor, BBB</li>
+      <li>Add "Verified Florida Roofing License: [Number]" prominently on site — AI cites verifiable credentials</li>
+      <li>Add press/media mentions if any — local Titusville news coverage = high-authority citation</li>
+      <li>Target 100+ Google reviews — primary trust signal for both Google Maps and AI search</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Conversion Rate Optimization</h2>
+    <ul class="recs">
+      <li>Add financing calculator: "Estimate your monthly payment" — /financing/ already converts well (72% engagement)</li>
+      <li>Add "urgency" to estimate form: "Limited slots available this week" or similar scarcity signal</li>
+      <li>A/B test homepage headline: "Titusville's Top Rated Roofer" vs. "Florida's Most Trusted Roofing Contractor"</li>
+      <li>Add live chat or SMS widget for non-emergency inquiries — capture leads outside business hours</li>
+      <li>Install CallRail for call tracking — currently no call attribution data in GA4</li>
+      <li>Add "Before & After" gallery section with filterable job types (residential, commercial, storm damage)</li>
+      <li>Add project count: "500+ Roofs Completed in Brevard County" type social proof if applicable</li>
+      <li>Add video testimonials — more persuasive than text reviews, especially for high-ticket roofing decisions</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Technical SEO Checklist</h2>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Task</th><th>Priority</th><th>Notes</th></tr>
+        <tr><td>Add JSON-LD schema: LocalBusiness + RoofingContractor</td><td><span class="badge badge-red">CRITICAL</span></td><td>Include NAP, hours, serviceArea, priceRange, aggregateRating</td></tr>
+        <tr><td>Add FAQ schema to all service pages</td><td><span class="badge badge-red">CRITICAL</span></td><td>Required for AI Overviews and Featured Snippets</td></tr>
+        <tr><td>Fix /render page (66 sessions, 100% bounce)</td><td><span class="badge badge-red">CRITICAL</span></td><td>This appears to be a broken route — 404 or redirect needed</td></tr>
+        <tr><td>Fix "Paid Other" attribution — confirm source is Angi</td><td><span class="badge badge-orange">HIGH</span></td><td>83% bounce — confirm it's Angi and cancel if so</td></tr>
+        <tr><td>Submit XML sitemap to Google Search Console</td><td><span class="badge badge-orange">HIGH</span></td><td>Ensure all new location pages are indexed promptly</td></tr>
+        <tr><td>Add canonical tags to all pages</td><td><span class="badge badge-orange">HIGH</span></td><td>Prevent duplicate content issues with location pages</td></tr>
+        <tr><td>Add Bing Webmaster Tools</td><td><span class="badge badge-blue">MEDIUM</span></td><td>Bing organic has the best bounce rate of any channel</td></tr>
+        <tr><td>Set up Google Search Console for sc-domain: property</td><td><span class="badge badge-blue">MEDIUM</span></td><td>Current GSC is URL-prefix — domain property captures more data</td></tr>
+        <tr><td>Compress all images to WebP</td><td><span class="badge badge-blue">MEDIUM</span></td><td>Roofing sites are image-heavy — WebP conversion = major speed boost</td></tr>
+        <tr><td>Enable Cloudflare (free tier) or CDN</td><td><span class="badge badge-blue">MEDIUM</span></td><td>Florida CDN improves load times for Brevard County visitors</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="report-footer">
+  Titan Roofing Florida — SEO & Performance Report &nbsp;|&nbsp; titanroofingfl.com &nbsp;|&nbsp; Real Time Marketing &nbsp;|&nbsp; analytics@realtimemarketing.com &nbsp;|&nbsp; June 2026
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// Sessions Chart
+new Chart(document.getElementById('sessionsChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026'],
+    datasets: [{
+      label: 'Sessions',
+      data: [261, 413, 399, 415, 642, 693, 445],
+      backgroundColor: ['#0A1628','#0A1628','#0A1628','#0A1628','#D4A017','#D4A017','#D4A017'],
+      borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, grid: { color: '#EEE' } }, x: { grid: { display: false } } }
+  }
+});
+
+// Channel Chart
+new Chart(document.getElementById('channelChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Direct', 'Organic Search', 'Paid Other', 'Organic Social', 'Paid Social', 'Other'],
+    datasets: [{
+      data: [1393, 888, 377, 328, 202, 80],
+      backgroundColor: ['#0A1628','#1A7A3C','#C0392B','#1565C0','#E07B39','#888'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } }
+    }
+  }
+});
+</script>
+</body>
+</html>
